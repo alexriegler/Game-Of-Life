@@ -15,8 +15,22 @@ struct GameState {
     std::array<bool, rows* cols> grid{};
 };
 
+template <GameState game_state, int row, int col>
+struct NextCell {
+    static constexpr auto value = game_state.grid[0] ? false : true;
+};
+
+// Variable template
+template <GameState game_state, int row, int col>
+inline constexpr auto NextCell_v = NextCell<game_state, row, col>::value;
+
 template <GameState game_state, int steps>
 struct NextState {
+    static constexpr auto value = GameState<3, 3>{ NextCell_v<game_state, 0, 0> };
+};
+
+template <GameState game_state>
+struct NextState<game_state, 0> {
     static constexpr auto value = game_state;
 };
 
@@ -33,8 +47,8 @@ TEST_CASE("Game state generated") {
     }
 
     SECTION("Variable template") {
-        static constexpr auto finalState = NextState_v<initial_state, 0>;
-        REQUIRE(initial_state == finalState);
+        static constexpr auto final_state = NextState_v<initial_state, 0>;
+        REQUIRE(initial_state == final_state);
     }
 }
 
@@ -49,4 +63,20 @@ TEST_CASE("Set game state") {
     std::ranges::fill(state.grid, true);
     constexpr auto is_true = [](bool b) { return b; };
     REQUIRE(std::ranges::all_of(state.grid, is_true));
+}
+
+TEST_CASE("1 neighbor, 1 step") {
+    static constexpr GameState<3, 3> initial_state{
+        true, false, false,
+        false, false, false,
+        false, false, false,
+    };
+    static constexpr GameState<3, 3> expected_state{
+        false, false, false,
+        false, false, false,
+        false, false, false,
+    };
+    static constexpr auto actual_state = NextState_v<initial_state, 1>;
+
+    REQUIRE(expected_state == actual_state);
 }
