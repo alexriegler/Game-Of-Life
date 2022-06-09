@@ -43,3 +43,10 @@ TEST_CASE("Default game state") {
     constexpr auto is_false = [](bool b) { return !b; };
     REQUIRE(std::ranges::all_of(state.grid, is_false));
 }
+
+TEST_CASE("Set game state") {
+    static constinit GameState<3, 3> state{};
+    std::ranges::fill(state.grid, true);
+    constexpr auto is_true = [](bool b) { return b; };
+    REQUIRE(std::ranges::all_of(state.grid, is_true));
+}
