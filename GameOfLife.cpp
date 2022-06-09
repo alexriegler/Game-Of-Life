@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <array>
 
+// GameState
 template <int rows, int cols>
 struct GameState {
     friend constexpr auto operator==(const GameState& lhs, const GameState& rhs) {
@@ -15,18 +16,30 @@ struct GameState {
     std::array<bool, rows* cols> grid{};
 };
 
+template <template <int, int> typename T, int rows, int cols>
+constexpr auto Rows(const T<rows, cols>&) {
+    return rows;
+}
+
+template <template <int, int> typename T, int rows, int cols>
+constexpr auto Cols(const T<rows, cols>&) {
+    return cols;
+}
+
+// NextCell
 template <GameState game_state, int row, int col>
 struct NextCell {
-    static constexpr auto value = game_state.grid[0] ? false : true;
+    static constexpr auto value = game_state.grid[row * Rows(game_state) + col] ? false : true;
 };
 
 // Variable template
 template <GameState game_state, int row, int col>
 inline constexpr auto NextCell_v = NextCell<game_state, row, col>::value;
 
+// Next state
 template <GameState game_state, int steps>
 struct NextState {
-    static constexpr auto value = GameState<3, 3>{ NextCell_v<game_state, 0, 0> };
+    static constexpr auto value = GameState<Rows(game_state), Cols(game_state)>{ NextCell_v<game_state, 0, 0> };
 };
 
 template <GameState game_state>
@@ -65,7 +78,7 @@ TEST_CASE("Set game state") {
     REQUIRE(std::ranges::all_of(state.grid, is_true));
 }
 
-TEST_CASE("1 neighbor, 1 step") {
+TEST_CASE("3x3, 1 alive, 1 step") {
     static constexpr GameState<3, 3> initial_state{
         true, false, false,
         false, false, false,
@@ -78,5 +91,16 @@ TEST_CASE("1 neighbor, 1 step") {
     };
     static constexpr auto actual_state = NextState_v<initial_state, 1>;
 
+    REQUIRE(expected_state == actual_state);
+}
+
+TEST_CASE("4x4, 1 alive, 1 step") {
+    static constexpr GameState<4, 4> initial_state{
+        true, false, false, false,
+        false, false, false, false,
+        false, false, false, false
+    };
+    static constexpr GameState<4, 4> expected_state{};
+    static constexpr auto actual_state = NextState_v<initial_state, 1>;
     REQUIRE(expected_state == actual_state);
 }
