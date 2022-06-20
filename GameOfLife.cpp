@@ -6,9 +6,11 @@
 #include <algorithm>
 #include <array>
 
+namespace ranges = std::ranges;
+
 // Coordinates
 struct Coordinates {
-    constexpr bool operator==(const Coordinates&) const = default;
+    constexpr auto operator<=>(const Coordinates&) const = default;
 
     int row{};
     int col{};
@@ -88,14 +90,14 @@ TEST_CASE("Game state generated") {
 TEST_CASE("Default game state") {
     static constexpr GameState<3, 3> state{};
     constexpr auto is_false = [](bool b) { return !b; };
-    REQUIRE(std::ranges::all_of(state.grid, is_false));
+    REQUIRE(ranges::all_of(state.grid, is_false));
 }
 
 TEST_CASE("Set game state") {
     static constinit GameState<3, 3> state{};
-    std::ranges::fill(state.grid, true);
+    ranges::fill(state.grid, true);
     constexpr auto is_true = [](bool b) { return b; };
-    REQUIRE(std::ranges::all_of(state.grid, is_true));
+    REQUIRE(ranges::all_of(state.grid, is_true));
 }
 
 TEST_CASE("3x3, 1 alive, 1 step") {
@@ -149,11 +151,13 @@ TEST_CASE("4x4, 1 alive, 1 step") {
 
 TEST_CASE("Get adjacent neighbors") {
     static constexpr GameState<3, 3> state{};
-    static constexpr auto expected_coords = std::array<Coordinates, 8>{ {
+    static constinit auto expected_coords = std::array<Coordinates, 8>{ {
         { 0, 0 }, { 0, 1 }, { 0, 2 },
         { 1, 0 }, /*{1, 1}*/{ 1, 2 },
         { 2, 0 }, { 2, 1 }, { 2, 2 }
         }};
-    static constexpr auto actual_coords = Adjacents_v < state, Coordinates{ 1, 1 } > ;
+    static constinit auto actual_coords = Adjacents_v < state, Coordinates{ 1, 1 } > ;
+    ranges::sort(expected_coords);
+    ranges::sort(actual_coords);
     REQUIRE(expected_coords == actual_coords);
 }
