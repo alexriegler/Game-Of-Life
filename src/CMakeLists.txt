@@ -5,7 +5,7 @@ add_executable (GameOfLife "GameOfLife.cpp" "GameOfLife.h" "Coordinates.h" "Game
 set(gcc_like_cxx "$<COMPILE_LANG_AND_ID:CXX,ARMClang,AppleClang,Clang,GNU,LCC>")
 set(msvc_cxx "$<COMPILE_LANG_AND_ID:CXX,MSVC>")
 target_compile_options(GameOfLife PUBLIC
-    "$<${gcc_like_cxx}:$<BUILD_INTERFACE:-Wall;-Wextra;-Wconversion;-Wshadow;-Wpedantic;-Wformat=2;-Wunused>>"
+    "$<${gcc_like_cxx}:$<BUILD_INTERFACE:-Wall;-Wextra;-Wconversion;-Wshadow;-Wpedantic;-Wformat=2;-Wunused;-Werror>>"
     "$<${msvc_cxx}:$<BUILD_INTERFACE:-W4;-WX>>"
 )
 
