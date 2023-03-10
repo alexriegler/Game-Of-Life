@@ -5,8 +5,39 @@
 
 #include <array>
 
+// TODO: Member template function could be useful? Then I wouldn't need to
+//       explicitly pass game state to everything.
+
+/// <summary>
+/// An alias representing a collection of coordinates adjacent to a cell.
+/// 
+/// In the following diagram, the 'A's represent the adjacent cells and the
+/// 'C' represents the center cell:
+/// 
+///     A A A
+///     A C A
+///     A A A
+/// 
+/// </summary>
 using AdjacentCoords = std::array<Coordinates, 8>;
 
+/// <summary>
+/// Metafunction for mapping a row to the coordinate system of the GameState.
+/// 
+/// Mapping:
+/// The table below describes the mapping from an input row, x, to the output row, y.
+/// The variable N is the number of rows in the GameState.
+/// 
+///    +--------------------------+
+///    |         x        |   y   |
+///    |--------------------------|
+///    |       x < 0      | N - 1 |
+///    |  0 <= x <= N - 1 |   x   |
+///    |       x >= N     |   0   |
+///    +--------------------------+
+/// </summary>
+/// <typeparam name="game_state">The game state associated with the row</typeparam>
+/// <typeparam name="row">The row to remap</typeparam>
 template<GameState game_state, int row>
 struct RowWrap {
     static constexpr auto value =
@@ -17,9 +48,20 @@ struct RowWrap {
             : Rows(game_state) - 1;
 };
 
+/// <summary>
+/// Variable helper template for wrapping a row.
+/// </summary>
+/// <typeparam name="game_state">The game state associated with the row</typeparam>
+/// <typeparam name="row">The row to wrap</typeparam>
 template <GameState game_state, int row>
 inline constexpr auto RowWrap_v = RowWrap<game_state, row>::value;
 
+/// <summary>
+/// Metafunction for getting the coordinates of the adjacent cell that is
+/// northwest of the cell at the specified coordinates.
+/// </summary>
+/// <typeparam name="game_state">The game state associated with the coordinates</typeparam>
+/// <typeparam name="coords">The coordinates of the center cell relative to the northwest adjacent cell</typeparam>
 template<GameState game_state, Coordinates coords>
 struct TopLeft {
     static constexpr auto value = Coordinates{

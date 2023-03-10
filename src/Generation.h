@@ -13,10 +13,8 @@ struct NextCell {
     static constexpr auto value = game_state.grid[coords.row * Rows(game_state) + coords.col] ? false : true;
 };
 
-// Variable template
-
 /// <summary>
-/// Variable helper template.
+/// Variable helper template for getting the next cell.
 /// </summary>
 /// <typeparam name="game_state">The game state associated with the cell</typeparam>
 /// <typeparam name="coords">The coordinates of the cell</typeparam>
@@ -36,7 +34,7 @@ struct NextState {
 /// <summary>
 /// Template specialization for zero steps.
 /// 
-/// The next state after zero steps is the same as the input state.
+/// The state after zero steps is the same as the initial input state.
 /// </summary>
 /// <typeparam name="game_state">The initial game state</typeparam>
 template <GameState game_state>
@@ -45,7 +43,7 @@ struct NextState<game_state, 0> {
 };
 
 /// <summary>
-/// Variable helper template.
+/// Variable helper template for NextState.
 /// </summary>
 /// <typeparam name="game_state">The initial game state</typeparam>
 /// <typeparam name="steps">The number of generations to step</typeparam>
