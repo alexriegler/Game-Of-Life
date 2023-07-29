@@ -1,0 +1,15 @@
+{
+    "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg/master/scripts/vcpkg.schema.json",
+    "name": "game-of-life",
+    "version": "0.0.1",
+    "maintainers":
+    [
+        "Alex Riegler"
+    ],
+    "description": "Fully functional Conway's Game of Life.",
+    "dependencies":
+    [
+        "catch2"
+    ],
+    "builtin-baseline": "638b1588be3a265a9c7ad5b212cef72a1cad336a"
+}

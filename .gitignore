@@ -12,6 +12,7 @@ _deps
 
 # Build
 out/
+build/
 
 # IDE
 .vs/

@@ -22,8 +22,6 @@ The tests can be found in [GameOfLife.cpp](./src/GameOfLife.cpp).
 * vcpkg 2022-05-05-67e17c1782801cf481be9ac0b3765dff3e4bdeb8+
   * Catch2 3.0.1#1+ installed
 
-I'll change the project to use vcpkg manifest mode soon.
-
 ## Build
 
 This project was tested on Windows 11 with [Visual Studio 2022 17.3.0 Preview 2.0](https://visualstudio.microsoft.com/vs/preview/). The code should compile with any C++20 standard-compliant compiler.
@@ -31,7 +29,7 @@ This project was tested on Windows 11 with [Visual Studio 2022 17.3.0 Preview 2.
 You can build the project with CMake by using the following commands from the root directory:
 
 ```bash
-cmake -S . -B build
+cmake -S . -B build -D CMAKE_TOOLCHAIN_FILE=$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake
 cmake --build build
 ```
 
